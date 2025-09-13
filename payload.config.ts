@@ -1,5 +1,6 @@
 import type { PayloadConfig } from 'payload/types'
-import cloudStorage, { s3Adapter } from '@payloadcms/plugin-cloud-storage'
+import { cloudStorage, s3Adapter } from '@payloadcms/plugin-cloud-storage'
+import { postgresAdapter } from '@payloadcms/db-postgres'
 import Users from './src/collections/Users'
 import Media from './src/collections/Media'
 import Pages from './src/collections/Pages'
@@ -56,6 +57,11 @@ const r2Adapter = s3Adapter({
 })
 
 const config: PayloadConfig = {
+  db: postgresAdapter({
+    pool: {
+      connectionString: process.env.DATABASE_URL as string,
+    },
+  }),
   serverURL: process.env.SERVER_URL,
   // Project conventions
   localization: { locales: ['en-US'], defaultLocale: 'en-US' },
