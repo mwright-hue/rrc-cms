@@ -1,5 +1,5 @@
 import type { PayloadConfig } from 'payload/types'
-import * as CloudStoragePlugin from '@payloadcms/plugin-cloud-storage'
+import { createRequire } from 'module'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import Users from './src/collections/Users'
 import Media from './src/collections/Media'
@@ -16,15 +16,32 @@ const allowedOrigins = [
   'https://cms.ridgeandrootcreative.com',
 ]
 
-// Support different export shapes across plugin versions
+const require = createRequire(import.meta.url)
+// Dynamically resolve plugin (handles CJS/ESM variations)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const cloudStorage: any = (CloudStoragePlugin as any).cloudStorage || (CloudStoragePlugin as any).default || (CloudStoragePlugin as any)
+const cloudStorageModule: any = (() => {
+  try {
+    return require('@payloadcms/plugin-cloud-storage')
+  } catch (e) {
+    return null
+  }
+})()
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const s3AdapterFactory: any =
-  (CloudStoragePlugin as any).s3Adapter ||
-  (CloudStoragePlugin as any).adapters?.s3?.s3Adapter ||
-  (CloudStoragePlugin as any).adapters?.s3?.default ||
-  (CloudStoragePlugin as any).adapters?.s3
+const cloudStorage: any = cloudStorageModule?.cloudStorage || cloudStorageModule?.default || cloudStorageModule
+// Try to load S3 adapter via subpath first, then via module fields
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let s3AdapterFactory: any = null
+try {
+  const s3Mod = require('@payloadcms/plugin-cloud-storage/s3')
+  s3AdapterFactory = s3Mod?.s3Adapter || s3Mod?.default || s3Mod
+} catch (_) {
+  s3AdapterFactory =
+    cloudStorageModule?.s3Adapter ||
+    cloudStorageModule?.adapters?.s3?.s3Adapter ||
+    cloudStorageModule?.adapters?.s3?.default ||
+    cloudStorageModule?.adapters?.s3 ||
+    null
+}
 
 if (typeof cloudStorage !== 'function') {
   throw new Error('Cloud storage plugin not available. Check @payloadcms/plugin-cloud-storage version.')
