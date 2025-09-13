@@ -1,14 +1,14 @@
 import type { PayloadConfig } from 'payload/types'
 import cloudStorage from '@payloadcms/plugin-cloud-storage'
 import { s3Adapter } from '@payloadcms/plugin-cloud-storage/s3'
-import Users from './collections/Users'
-import Media from './collections/Media'
-import Pages from './collections/Pages'
-import Posts from './collections/Posts'
-import CaseStudies from './collections/CaseStudies'
-import SiteSettings from './globals/SiteSettings'
-import SEODefaults from './globals/SEODefaults'
-import { startScheduler } from './utils/scheduler'
+import Users from './src/collections/Users'
+import Media from './src/collections/Media'
+import Pages from './src/collections/Pages'
+import Posts from './src/collections/Posts'
+import CaseStudies from './src/collections/CaseStudies'
+import SiteSettings from './src/globals/SiteSettings'
+import SEODefaults from './src/globals/SEODefaults'
+import { startScheduler } from './src/utils/scheduler'
 
 const allowedOrigins = [
   'https://ridgeandrootcreative.com',
