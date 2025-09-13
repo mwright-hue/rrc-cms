@@ -1,6 +1,5 @@
 import type { PayloadConfig } from 'payload/types'
-import cloudStorage from '@payloadcms/plugin-cloud-storage'
-import { s3Adapter } from '@payloadcms/plugin-cloud-storage/s3'
+import cloudStorage, { s3Adapter } from '@payloadcms/plugin-cloud-storage'
 import Users from './src/collections/Users'
 import Media from './src/collections/Media'
 import Pages from './src/collections/Pages'
