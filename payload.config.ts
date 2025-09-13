@@ -20,9 +20,20 @@ const allowedOrigins = [
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const cloudStorage: any = (CloudStoragePlugin as any).cloudStorage || (CloudStoragePlugin as any).default || (CloudStoragePlugin as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const s3Adapter: any = (CloudStoragePlugin as any).s3Adapter || (CloudStoragePlugin as any).adapters?.s3
+const s3AdapterFactory: any =
+  (CloudStoragePlugin as any).s3Adapter ||
+  (CloudStoragePlugin as any).adapters?.s3?.s3Adapter ||
+  (CloudStoragePlugin as any).adapters?.s3?.default ||
+  (CloudStoragePlugin as any).adapters?.s3
 
-const r2Adapter = s3Adapter({
+if (typeof cloudStorage !== 'function') {
+  throw new Error('Cloud storage plugin not available. Check @payloadcms/plugin-cloud-storage version.')
+}
+if (typeof s3AdapterFactory !== 'function') {
+  throw new Error('S3 adapter not available from cloud storage plugin. Check plugin version or exports.')
+}
+
+const r2Adapter = s3AdapterFactory({
   config: {
     endpoint: process.env.R2_S3_ENDPOINT as string,
     forcePathStyle: true,
