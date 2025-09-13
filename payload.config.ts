@@ -1,5 +1,5 @@
 import type { PayloadConfig } from 'payload/types'
-import { cloudStorage, s3Adapter } from '@payloadcms/plugin-cloud-storage'
+import * as CloudStoragePlugin from '@payloadcms/plugin-cloud-storage'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import Users from './src/collections/Users'
 import Media from './src/collections/Media'
@@ -15,6 +15,12 @@ const allowedOrigins = [
   'https://www.ridgeandrootcreative.com',
   'https://cms.ridgeandrootcreative.com',
 ]
+
+// Support different export shapes across plugin versions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const cloudStorage: any = (CloudStoragePlugin as any).cloudStorage || (CloudStoragePlugin as any).default || (CloudStoragePlugin as any)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const s3Adapter: any = (CloudStoragePlugin as any).s3Adapter || (CloudStoragePlugin as any).adapters?.s3
 
 const r2Adapter = s3Adapter({
   config: {
