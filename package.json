@@ -8,6 +8,7 @@
   "dependencies": {
     "@payloadcms/db-postgres": "^3.0.0",
     "@payloadcms/plugin-cloud-storage": "^3.1.0",
+    "express": "^4.19.2",
     "payload": "^3.0.0"
   },
   "devDependencies": {
@@ -16,7 +17,7 @@
   "scripts": {
     "typecheck": "node -e \"process.exit(require('fs').existsSync('tsconfig.json')?0:1)\" && tsc -p tsconfig.json --noEmit || echo 'TypeScript config not found'",
     "build": "echo 'CMS build is app-specific; ensure your runtime compiles TS or uses ts-node'",
-    "start": "payload serve",
-    "dev": "payload serve --watch"
+    "start": "payload run server.ts",
+    "dev": "payload run server.ts --watch"
   }
 }
