@@ -1,19 +1,14 @@
 import express from 'express'
 import payload from 'payload'
-import path from 'path'
-import { fileURLToPath } from 'url'
+import config from './payload.config'
 
 const PORT = Number(process.env.PORT || 3000)
 
 const start = async () => {
   const app = express()
 
-  const dirname = path.dirname(fileURLToPath(import.meta.url))
-  const configPath = path.resolve(dirname, 'payload.config.ts')
-
   await payload.init({
-    configPath,
-    // Config is auto-resolved from payload.config.ts at project root
+    config,
     secret: process.env.PAYLOAD_SECRET as string,
     express: app,
     onInit: async () => {
